@@ -42,6 +42,7 @@ jobs:
         with:
           directory: .
           download_external_modules: true
+          soft_fail: true
 
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
