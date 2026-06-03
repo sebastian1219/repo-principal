@@ -1,5 +1,5 @@
 ﻿module "redes" {
-  source         = "git::https://github.com/sebastian1219/M-dulo-Redes.git?ref=v1.0.1"
+  source         = "git::https://github.com/sebastian1219/M-dulo-Redes.git?ref=v1.0.2"
   vpc_cidr       = var.vpc_cidr
   vpc_name       = var.vpc_name
   public_subnets = var.public_subnets
@@ -9,7 +9,7 @@
 }
 
 module "computo" {
-  source        = "git::https://github.com/sebastian1219/M-dulo-C-mputo-.git?ref=v1.0.0"
+  source        = "git::https://github.com/sebastian1219/M-dulo-C-mputo-.git?ref=v1.0.2"
   ami_id        = var.ami_id
   instance_type = var.instance_type
   subnet_id     = module.redes.subnet_ids[0]
@@ -18,7 +18,7 @@ module "computo" {
 }
 
 module "almacenamiento" {
-  source            = "git::https://github.com/sebastian1219/M-dulo-Almacenamiento-.git?ref=v1.0.0"
+  source            = "git::https://github.com/sebastian1219/M-dulo-Almacenamiento-.git?ref=v1.0.2"
   bucket_name       = var.bucket_name
   bucket_acl        = var.bucket_acl
   environment       = var.environment
