@@ -1,12 +1,20 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+
+  required_version = ">= 1.5.0"
+}
+
 provider "aws" {
-  region                  = "us-east-1"
-  access_key              = var.aws_access_key_id
-  secret_key              = var.aws_secret_access_key
-  token                   = var.aws_session_token
+  region = "us-east-1"
 }
 
 module "redes" {
-  source       = "./modules/redes"
+  source       = "git::https://github.com/VICENTE0777/M-dulo-Redes.git"
   vpc_cidr     = var.vpc_cidr
   vpc_name     = var.vpc_name
   public_subnets = var.public_subnets
@@ -16,7 +24,7 @@ module "redes" {
 }
 
 module "computo" {
-  source        = "./modules/computo"
+  source        = "git::https://github.com/VICENTE0777/M-dulo-C-mputo-.git"
   ami_id        = var.ami_id
   instance_type = var.instance_type
   instance_name = var.instance_name
@@ -25,7 +33,7 @@ module "computo" {
 }
 
 module "almacenamiento" {
-  source            = "./modules/almacenamiento"
+  source            = "git::https://github.com/VICENTE0777/M-dulo-Almacenamiento-.git"
   bucket_name       = var.bucket_name
   bucket_acl        = var.bucket_acl
   environment       = var.environment
