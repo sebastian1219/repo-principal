@@ -1,24 +1,31 @@
-﻿module "redes" {
-  source         = "git::https://github.com/sebastian1219/M-dulo-Redes.git?ref=v1.0.3"
-  vpc_cidr       = var.vpc_cidr
-  vpc_name       = var.vpc_name
+provider "aws" {
+  region                  = "us-east-1"
+  access_key              = var.aws_access_key_id
+  secret_key              = var.aws_secret_access_key
+  token                   = var.aws_session_token
+}
+
+module "redes" {
+  source       = "./modules/redes"
+  vpc_cidr     = var.vpc_cidr
+  vpc_name     = var.vpc_name
   public_subnets = var.public_subnets
-  azs            = var.azs
-  sg_name        = var.sg_name
-  allowed_ips    = var.allowed_ips
+  azs          = var.azs
+  sg_name      = var.sg_name
+  allowed_ips  = var.allowed_ips
 }
 
 module "computo" {
-  source        = "git::https://github.com/sebastian1219/M-dulo-C-mputo-.git?ref=v1.0.2"
+  source        = "./modules/computo"
   ami_id        = var.ami_id
   instance_type = var.instance_type
-  subnet_id     = module.redes.subnet_ids[0]
-  sg_id         = module.redes.sg_id
   instance_name = var.instance_name
+  subnet_ids    = module.redes.subnet_ids
+  sg_id         = module.redes.sg_id
 }
 
 module "almacenamiento" {
-  source            = "git::https://github.com/sebastian1219/M-dulo-Almacenamiento-.git?ref=v1.0.2"
+  source            = "./modules/almacenamiento"
   bucket_name       = var.bucket_name
   bucket_acl        = var.bucket_acl
   environment       = var.environment
