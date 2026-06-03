@@ -30,10 +30,13 @@ jobs:
         run: terraform validate
 
       # 5. Linter de Terraform (TFLint)
-      - name: TFLint
-        uses: terraform-linters/tflint-action@v3
-        with:
-          args: --init --recursive
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: Run TFLint
+        run: |
+          tflint --init
+          tflint --recursive
 
       # 6. Validación de seguridad con Checkov
       - name: Checkov
@@ -50,3 +53,4 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -var-file="terraform.tfvars" -auto-approve
+
