@@ -1,5 +1,5 @@
 ﻿module "redes" {
-  source         = "git::https://github.com/sebastian1219/M-dulo-Redes.git?ref=v1.0.2"
+  source         = "git::https://github.com/sebastian1219/M-dulo-Redes.git?ref=v1.0.3"
   vpc_cidr       = var.vpc_cidr
   vpc_name       = var.vpc_name
   public_subnets = var.public_subnets
