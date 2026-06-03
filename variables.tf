@@ -1,9 +1,3 @@
-# Token para clonar módulos privados
-variable "github_token" {
-  description = "GitHub token for private module access"
-  type        = string
-}
-
 # Redes
 variable "vpc_cidr" { type = string }
 variable "vpc_name" { type = string }
