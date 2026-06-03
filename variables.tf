@@ -1,19 +1,3 @@
-variable "aws_access_key_id" {
-  description = "AWS Access Key ID"
-  type        = string
-}
-
-variable "aws_secret_access_key" {
-  description = "AWS Secret Access Key"
-  type        = string
-}
-
-variable "aws_session_token" {
-  description = "AWS Session Token (opcional)"
-  type        = string
-  default     = null
-}
-
 variable "vpc_cidr" { type = string }
 variable "vpc_name" { type = string }
 variable "public_subnets" { type = list(string) }
