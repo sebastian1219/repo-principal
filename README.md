@@ -1,140 +1,71 @@
-﻿\# Repo Principal - Infraestructura AWS
+Proyecto Principal: Infraestructura Modular con Terraform
+Este repositorio implementa una arquitectura modular en AWS utilizando Terraform. La infraestructura se divide en tres módulos independientes que se integran desde repositorios privados en GitHub:
 
+Módulo Redes: creación de VPC, subnets y security groups.
 
+Módulo Cómputo: despliegue de instancias EC2.
 
-Este repositorio actúa como \*\*controlador central\*\* para orquestar los módulos de Terraform de \*\*Redes\*\*, \*\*Cómputo\*\* y \*\*Almacenamiento\*\*.  
+Módulo Almacenamiento: configuración de buckets S3.
 
-Todo el código está diseñado siguiendo buenas prácticas de modularización, documentación y versionado semántico.
+El flujo de despliegue se automatiza mediante GitHub Actions, garantizando reproducibilidad y control de cambios.
 
+Estructura del repositorio
+main.tf: orquestación de los módulos.
+versions.tf: definición de proveedores y versión mínima de Terraform.
+variables.tf: declaración de variables de entrada.
+terraform.tfvars: valores concretos para el despliegue.
+outputs.tf: exportación de identificadores y recursos creados.
+.github/workflows/terraform.yml: pipeline CI/CD.
+README.md: documentación principal.
 
+Flujo CI/CD
+El pipeline ejecuta las siguientes etapas:
 
-\---
+Checkout del repositorio principal.
 
+Configuración de credenciales para clonar módulos privados.
 
+Instalación de Terraform.
 
-\## 📂 Estructura del repositorio
+Ejecución de terraform init para inicializar backend y módulos.
 
+Validación de sintaxis con terraform validate.
 
+Análisis de buenas prácticas con TFLint.
 
-repo-principal/
+Análisis de seguridad con Checkov.
 
-├── main.tf              # Orquesta los módulos externos
+Ejecución de terraform plan para mostrar cambios.
 
-├── variables.tf         # Variables globales requeridas
+Ejecución de terraform apply para aplicar la infraestructura.
 
-├── outputs.tf           # Outputs de alto nivel
+Autenticación para módulos privados
+Existen dos métodos para permitir que Terraform descargue los módulos privados:
 
-├── versions.tf          # Versiones de Terraform y proveedores
+Personal Access Token (PAT): crear un token en GitHub con permisos repo, guardarlo como secreto en el repositorio principal y configurarlo en el workflow.
 
-├── README.md            # Documentación general
+SSH Deploy Key: generar una clave SSH, registrar la clave pública como Deploy Key en cada repositorio de módulo y guardar la clave privada como secreto en el repositorio principal.
 
-├── CHANGELOG.md         # Registro de cambios
+Si los módulos no contienen información sensible, también es posible hacerlos públicos o copiarlos dentro de la carpeta modules del repositorio principal.
 
-├── .gitignore           # Ignorar archivos sensibles
+Outputs esperados
+Al finalizar el despliegue, Terraform mostrará:
 
-├── examples/README.md   # Ejemplos prácticos de uso
+vpc_id y subnet_ids: red creada.
 
-└── .github/workflows/ci-cd.yml  # Pipeline CI/CD
+sg_id: security group asociado.
 
+instance_id y instance_ip: instancia EC2 desplegada.
 
+bucket_name y bucket_arn: almacenamiento S3 configurado.
 
-\---
+Buenas prácticas
+Mantener los módulos versionados y documentados.
 
+Validar la sintaxis antes de aplicar cambios.
 
+Registrar modificaciones en un archivo CHANGELOG.md.
 
-\## 📄 Explicación de los scripts
+Proteger secretos en GitHub Actions.
 
-
-
-\### \*\*main.tf\*\*
-
-\- Contiene la integración de los módulos externos:
-
-&#x20; - \*\*Redes\*\*: VPC, subnets y security groups.
-
-&#x20; - \*\*Cómputo\*\*: Instancias EC2.
-
-&#x20; - \*\*Almacenamiento\*\*: Buckets S3.
-
-\- Cada módulo se invoca desde su repositorio GitHub correspondiente:
-
-&#x20; - Redes → \[Módulo Redes](https://github.com/sebastian1219/M-dulo-Redes.git)  
-
-&#x20; - Cómputo → \[Módulo Cómputo](https://github.com/sebastian1219/M-dulo-C-mputo-.git)  
-
-&#x20; - Almacenamiento → \[Módulo Almacenamiento](https://github.com/sebastian1219/M-dulo-Almacenamiento-.git)
-
-
-
-\### \*\*variables.tf\*\*
-
-\- Define las variables globales necesarias para el despliegue.
-
-\- No incluye valores por defecto, lo que obliga a definirlas en `terraform.tfvars` o en la línea de comandos.
-
-\- Ejemplo de variables:
-
-&#x20; - `vpc\_cidr` → CIDR block de la VPC.
-
-&#x20; - `bucket\_name` → Nombre del bucket S3.
-
-&#x20; - `instance\_type` → Tipo de instancia EC2.
-
-&#x20; - `ami\_id` → AMI para la instancia EC2.
-
-
-
-\### \*\*outputs.tf\*\*
-
-\- Expone los resultados clave del despliegue:
-
-&#x20; - `vpc\_id` → ID de la VPC creada.
-
-&#x20; - `instance\_ip` → IP pública de la instancia EC2.
-
-&#x20; - `bucket\_name` → Nombre del bucket S3.
-
-
-
-\### \*\*versions.tf\*\*
-
-\- Define la versión mínima de Terraform y los proveedores requeridos.
-
-\- En este caso:
-
-&#x20; - Terraform `>= 1.5.0`
-
-&#x20; - AWS Provider `\~> 5.0`
-
-
-
-\### \*\*CHANGELOG.md\*\*
-
-\- Documenta los cambios realizados en cada versión del proyecto.
-
-\- Sigue el formato semántico (MAJOR.MINOR.PATCH).
-
-
-Explicación paso a paso
-Checkout → Descarga el código del repo.
-
-Setup Terraform → Instala la versión requerida.
-
-Init → Inicializa el backend y proveedores.
-
-Validate → Revisa sintaxis y estructura.
-
-TFLint → Aplica buenas prácticas de estilo.
-
-Checkov → Escanea seguridad y compliance.
-
-Plan → Genera plan de ejecución en PR (no aplica cambios).
-
-Apply → Aplica cambios automáticamente en main.
-
-🚀 Flujo de trabajo en acción
-Cuando haces un pull request, el workflow corre hasta terraform plan → así validas antes de aplicar.
-
-Cuando haces push a main, el workflow corre hasta terraform apply → despliega la infraestructura usando tus módulos.
-
-
+Revisar periódicamente permisos y credenciales.
